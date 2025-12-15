@@ -128,3 +128,17 @@ resource "aws_iam_role_policy_attachment" "attach_secrets_policy" {
   policy_arn = aws_iam_policy.tenant_secretsmanager_read.arn
 }
 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadSpecificSecret",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws-us-gov:secretsmanager:us-gov-west-1:109342086299:secret:globaltenant1-mssql-dev-db-Creds-*"
+    }
+  ]
+}
