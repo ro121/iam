@@ -86,3 +86,45 @@ output "rds_monitoring_role_arn" {
   description = "ARN of the external RDS monitoring role"
   value       = aws_iam_role.rds_monitoring_external.arn
 }
+
+
+
+
+variable "secret_arns" {
+  description = "List of Secrets Manager ARNs that Tenant_DevOps_Engineer can read"
+  type        = list(string)
+}
+
+
+secret_arns = [
+  "arn:aws-us-gov:secretsmanager:us-gov-west-1:109342086299:secret:lakehouse/db/password-*",
+  "arn:aws-us-gov:secretsmanager:us-gov-west-1:109342086299:secret:lakehouse/api/key-*"
+]
+
+
+resource "aws_iam_policy" "tenant_secretsmanager_read" {
+  name        = "tenant-devops-engineer-secrets-read"
+  description = "Read-only access to specific Secrets Manager secrets"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowReadSpecificSecrets"
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = var.secret_arns
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_role_policy_attachment" "attach_secrets_policy" {
+  role       = "Tenant_DevOps_Engineer"
+  policy_arn = aws_iam_policy.tenant_secretsmanager_read.arn
+}
+
