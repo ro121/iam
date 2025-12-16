@@ -142,3 +142,29 @@ resource "aws_iam_role_policy_attachment" "attach_secrets_policy" {
     }
   ]
 }
+
+
+
+resource "aws_iam_role" "tenant_devops_role" {
+  count = length(data.aws_iam_role.tenant_devops_role.id) == 0 ? 1 : 0  # Only create if not found
+
+  name               = "Tenant_DevOps_Engineer"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowAssumeRole"
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  lifecycle {
+    prevent_destroy = true  # Prevent Terraform from destroying the role
+  }
+}
+
