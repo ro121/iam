@@ -167,10 +167,3 @@ resource "aws_iam_role" "tenant_devops_role" {
     prevent_destroy = true  # Prevent Terraform from destroying the role
   }
 }
-
-
-This repository configures Vault policies and integrates Keycloak for Single Sign-On (SSO) via OpenID Connect (OIDC). The setup includes creating policies such as readonly, rwadmin, and superuser for role-based access control (RBAC) in Vault. These policies are dynamically assigned to users based on their Keycloak group memberships.
-
-Keycloak is configured as the Identity Provider (IdP) for Vault, with JWT tokens used for authentication and policy mapping. The OIDC authentication method is enabled in Vault using Terraform, with client ID and client secret securely managed. Vault roles are mapped to Keycloak user groups, ensuring seamless access control.
-
-This integration allows users to authenticate via Keycloak and access Vault with the correct policies based on their group assignments in Keycloak.
